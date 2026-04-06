@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobHunt - Find Your Dream Job</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        /* NAVBAR */
+        nav {
+            background-color: #2c3e50;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h1 {
+            color: white;
+            font-size: 24px;
+        }
+
+        nav h1 span {
+            color: #f39c12;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 15px;
+        }
+
+        .nav-links a:hover {
+            color: #f39c12;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .hero h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            margin-bottom: 25px;
+            color: #d0e8f5;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input {
+            padding: 12px 18px;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            width: 300px;
+            outline: none;
+        }
+
+        .search-bar button {
+            padding: 12px 25px;
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #e67e22;
+        }
+
+        /* FILTERS */
+        .filters {
+            background-color: white;
+            padding: 15px 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filters label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .filters select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filters button {
+            padding: 8px 18px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .filters button:hover {
+            background-color: #c0392b;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            padding: 20px 30px 0;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            font-size: 14px;
+            background-color: #ddd;
+        }
+
+        .tab-btn.active {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* MAIN CONTENT */
+        .container {
+            padding: 0 30px 30px;
+        }
+
+        /* JOB CARDS */
+        .job-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .job-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid #3498db;
+            transition: transform 0.2s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .job-card .company-logo {
+            width: 45px;
+            height: 45px;
+            background-color: #3498db;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            float: left;
+            margin-right: 12px;
+        }
+
+        .job-card .job-info {
+            overflow: hidden;
+        }
+
+        .job-card h3 {
+            font-size: 17px;
+            margin-bottom: 3px;
+            color: #2c3e50;
+        }
+
+        .job-card .company-name {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .job-card .details {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-blue { background-color: #d6eaf8; color: #2980b9; }
+        .badge-green { background-color: #d5f5e3; color: #27ae60; }
+        .badge-orange { background-color: #fdebd0; color: #e67e22; }
+
+        .job-card .salary {
+            margin-top: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .job-card .card-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-apply {
+            padding: 8px 18px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-apply:hover { background-color: #2980b9; }
+
+        .btn-save {
+            padding: 8px 14px;
+            background-color: white;
+            color: #3498db;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-save.saved {
+            background-color: #f39c12;
+            border-color: #f39c12;
+            color: white;
+        }
+
+        /* NO RESULTS */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 16px;
+            display: none;
+        }
+
+        /* SAVED JOBS TAB */
+        .saved-section {
+            display: none;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            width: 480px;
+            max-width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal h2 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .modal .job-title-sub {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .modal .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 22px;
+            cursor: pointer;
+            color: #7f8c8d;
+            background: none;
+            border: none;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .modal .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .modal .submit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* SUCCESS MESSAGE */
+        .success-msg {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-msg .checkmark {
+            font-size: 50px;
+        }
+
+        .success-msg h3 {
+            font-size: 20px;
+            margin: 10px 0 5px;
+            color: #27ae60;
+        }
+
+        .success-msg p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* RESULTS COUNT */
+        .results-info {
+            padding: 10px 0 5px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <h1>Job<span>Hunt</span></h1>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h2>Find Your Dream Job Today!</h2>
+        <p>Search from hundreds of job listings across India</p>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search job title, skill, company..." />
+            <button onclick="searchJobs()">Search</button>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+        <label>Filter by:</label>
+        <select id="locationFilter" onchange="applyFilters()">
+            <option value="">All Locations</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Pune">Pune</option>
+            <option value="Remote">Remote</option>
+        </select>
+
+        <select id="typeFilter" onchange="applyFilters()">
+            <option value="">All Job Types</option>
+            <option value="Full Time">Full Time</option>
+            <option value="Part Time">Part Time</option>
+            <option value="Internship">Internship</option>
+            <option value="Freelance">Freelance</option>
+        </select>
+
+        <select id="expFilter" onchange="applyFilters()">
+            <option value="">All Experience</option>
+            <option value="Fresher">Fresher</option>
+            <option value="1-3 years">1-3 years</option>
+            <option value="3-5 years">3-5 years</option>
+        </select>
+
+        <button onclick="clearFilters()">Clear Filters</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('jobs', this)">All Jobs</button>
+        <button class="tab-btn" onclick="showTab('saved', this)">Saved Jobs ⭐</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+
+        <!-- ALL JOBS TAB -->
+        <div id="jobs-tab">
+            <div class="results-info" id="resultsInfo">Showing all jobs</div>
+            <div class="job-list" id="jobList"></div>
+            <div class="no-results" id="noResults">No jobs found matching your search. Try different filters!</div>
+        </div>
+
+        <!-- SAVED JOBS TAB -->
+        <div id="saved-tab" style="display:none;">
+            <div class="results-info" id="savedInfo">Your saved jobs will appear here</div>
+            <div class="job-list" id="savedList"></div>
+            <div class="no-results" id="noSaved" style="display:block;">You haven't saved any jobs yet. Click "Save" on any job!</div>
+        </div>
+
+    </div>
+
+    <!-- APPLICATION MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <button class="close-btn" onclick="closeModal()">&#x2715;</button>
+
+            <!-- Form -->
+            <div id="applicationForm">
+                <h2>Apply for Job</h2>
+                <p class="job-title-sub" id="modalJobTitle">Job Title at Company</p>
+
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="appName" placeholder="Enter your full name" />
+                </div>
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="appEmail" placeholder="youremail@example.com" />
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="appPhone" placeholder="10-digit mobile number" />
+                </div>
+                <div class="form-group">
+                    <label>Upload Resume (PDF)</label>
+                    <input type="file" id="appResume" accept=".pdf,.doc,.docx" />
+                </div>
+                <div class="form-group">
+                    <label>Cover Letter / Why should we hire you?</label>
+                    <textarea id="appCover" placeholder="Write a short note about yourself..."></textarea>
+                </div>
+                <button class="submit-btn" onclick="submitApplication()">Submit Application</button>
+            </div>
+
+            <!-- Success Screen -->
+            <div class="success-msg" id="successMsg">
+                <div class="checkmark">✅</div>
+                <h3>Application Submitted!</h3>
+                <p>We have received your application. Good luck! 🤞</p>
+                <br>
+                <button class="submit-btn" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Made with ❤️ by a CS Student | JobHunt &copy; 2024</p>
+    </footer>
+
+    <script>
+        // =====================
+        // JOB DATA
+        // =====================
+        const jobs = [
+            {
+                id: 1,
+                title: "Frontend Developer",
+                company: "TechSoft Solutions",
+                location: "Bangalore",
+                type: "Full Time",
+                experience: "1-3 years",
+                salary: "₹4-6 LPA",
+                skills: ["HTML", "CSS", "React"],
+                logo: "TS"
+            },
+            {
+                id: 2,
+                title: "Python Developer Intern",
+                company: "DataMinds",
+                location: "Remote",
+                type: "Internship",
+                experience: "Fresher",
+                salary: "₹10,000/month",
+                skills: ["Python", "Django"],
+                logo: "DM"
+            },
+            {
+                id: 3,
+                title: "UI/UX Designer",
+                company: "CreativeHub",
+                location: "Mumbai",
+                type: "Full Time",
+                experience: "1-3 years",
+                salary: "₹5-8 LPA",
+                skills: ["Figma", "Adobe XD"],
+                logo: "CH"
+            },
+            {
+                id: 4,
+                title: "Backend Developer",
+                company: "CloudBase Inc",
+                location: "Hyderabad",
+                type: "Full Time",
+                experience: "3-5 years",
+                salary: "₹10-15 LPA",
+                skills: ["Node.js", "MongoDB", "AWS"],
+                logo: "CB"
+            },
+            {
+                id: 5,
+                title: "Data Analyst",
+                company: "InsightCo",
+                location: "Pune",
+                type: "Full Time",
+                experience: "1-3 years",
+                salary: "₹6-9 LPA",
+                skills: ["Excel", "SQL", "Power BI"],
+                logo: "IC"
+            },
+            {
+                id: 6,
+                title: "Android Developer",
+                company: "AppWave",
+                location: "Delhi",
+                type: "Full Time",
+                experience: "Fresher",
+                salary: "₹3-5 LPA",
+                skills: ["Kotlin", "Android Studio"],
+                logo: "AW"
+            },
+            {
+                id: 7,
+                title: "Content Writer",
+                company: "WordCraft",
+                location: "Remote",
+                type: "Freelance",
+                experience: "Fresher",
+                salary: "₹500/article",
+                skills: ["Writing", "SEO", "Research"],
+                logo: "WC"
+            },
+            {
+                id: 8,
+                title: "DevOps Engineer",
+                company: "InfraNet",
+                location: "Bangalore",
+                type: "Full Time",
+                experience: "3-5 years",
+                salary: "₹15-20 LPA",
+                skills: ["Docker", "Kubernetes", "CI/CD"],
+                logo: "IN"
+            },
+            {
+                id: 9,
+                title: "Machine Learning Intern",
+                company: "AI Labs",
+                location: "Hyderabad",
+                type: "Internship",
+                experience: "Fresher",
+                salary: "₹15,000/month",
+                skills: ["Python", "TensorFlow", "NumPy"],
+                logo: "AL"
+            },
+            {
+                id: 10,
+                title: "HR Executive",
+                company: "PeopleFirst",
+                location: "Mumbai",
+                type: "Part Time",
+                experience: "1-3 years",
+                salary: "₹3-4 LPA",
+                skills: ["Recruitment", "MS Office"],
+                logo: "PF"
+            }
+        ];
+
+        // Saved jobs stored here (just IDs)
+        let savedJobs = [];
+
+        // Colors for logo backgrounds
+        const colors = ["#3498db","#e74c3c","#27ae60","#9b59b6","#f39c12","#1abc9c","#e67e22","#2980b9"];
+
+        // =====================
+        // RENDER JOBS
+        // =====================
+        function renderJobs(list, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+
+            if (list.length === 0) return;
+
+            list.forEach((job, index) => {
+                const isSaved = savedJobs.includes(job.id);
+                const logoColor = colors[index % colors.length];
+
+                const card = document.createElement("div");
+                card.className = "job-card";
+                card.id = "card-" + job.id;
+
+                card.innerHTML = `
+                    <div class="company-logo" style="background-color:${logoColor}">${job.logo}</div>
+                    <div class="job-info">
+                        <h3>${job.title}</h3>
+                        <div class="company-name">${job.company}</div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <div class="details">
+                        <span class="badge badge-blue">📍 ${job.location}</span>
+                        <span class="badge badge-green">💼 ${job.type}</span>
+                        <span class="badge badge-orange">🎓 ${job.experience}</span>
+                    </div>
+                    <div class="details" style="margin-top:8px; gap:6px; flex-wrap:wrap;">
+                        ${job.skills.map(s => `<span class="badge" style="background:#eee;color:#555;">${s}</span>`).join("")}
+                    </div>
+                    <div class="salary">${job.salary}</div>
+                    <div class="card-actions">
+                        <button class="btn-apply" onclick="openModal(${job.id})">Apply Now</button>
+                        <button class="btn-save ${isSaved ? 'saved' : ''}" id="save-btn-${job.id}" onclick="toggleSave(${job.id})">
+                            ${isSaved ? "⭐ Saved" : "☆ Save"}
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // =====================
+        // SEARCH
+        // =====================
+        function searchJobs() {
+            applyFilters();
+        }
+
+        // Listen for Enter key in search box
+        document.getElementById("searchInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") searchJobs();
+        });
+
+        // =====================
+        // FILTERS
+        // =====================
+        function applyFilters() {
+            const search = document.getElementById("searchInput").value.toLowerCase();
+            const location = document.getElementById("locationFilter").value;
+            const type = document.getElementById("typeFilter").value;
+            const exp = document.getElementById("expFilter").value;
+
+            let filtered = jobs.filter(job => {
+                const matchSearch = !search ||
+                    job.title.toLowerCase().includes(search) ||
+                    job.company.toLowerCase().includes(search) ||
+                    job.skills.some(s => s.toLowerCase().includes(search));
+
+                const matchLocation = !location || job.location === location;
+                const matchType = !type || job.type === type;
+                const matchExp = !exp || job.experience === exp;
+
+                return matchSearch && matchLocation && matchType && matchExp;
+            });
+
+            renderJobs(filtered, "jobList");
+
+            const info = document.getElementById("resultsInfo");
+            const noRes = document.getElementById("noResults");
+
+            if (filtered.length === 0) {
+                noRes.style.display = "block";
+                info.textContent = "No results found";
+            } else {
+                noRes.style.display = "none";
+                info.textContent = `Showing ${filtered.length} job${filtered.length > 1 ? "s" : ""}`;
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById("searchInput").value = "";
+            document.getElementById("locationFilter").value = "";
+            document.getElementById("typeFilter").value = "";
+            document.getElementById("expFilter").value = "";
+            applyFilters();
+        }
+
+        // =====================
+        // SAVE JOBS
+        // =====================
+        function toggleSave(jobId) {
+            const btn = document.getElementById("save-btn-" + jobId);
+
+            if (savedJobs.includes(jobId)) {
+                savedJobs = savedJobs.filter(id => id !== jobId);
+                btn.textContent = "☆ Save";
+                btn.classList.remove("saved");
+            } else {
+                savedJobs.push(jobId);
+                btn.textContent = "⭐ Saved";
+                btn.classList.add("saved");
+            }
+
+            // Refresh saved tab
+            updateSavedTab();
+        }
+
+        function updateSavedTab() {
+            const saved = jobs.filter(j => savedJobs.includes(j.id));
+            renderJobs(saved, "savedList");
+
+            const noSaved = document.getElementById("noSaved");
+            const savedInfo = document.getElementById("savedInfo");
+
+            if (saved.length === 0) {
+                noSaved.style.display = "block";
+                savedInfo.textContent = "No saved jobs";
+            } else {
+                noSaved.style.display = "none";
+                savedInfo.textContent = `You have saved ${saved.length} job${saved.length > 1 ? "s" : ""}`;
+            }
+        }
+
+        // =====================
+        // TABS
+        // =====================
+        function showTab(tabName, btn) {
+            document.getElementById("jobs-tab").style.display = tabName === "jobs" ? "block" : "none";
+            document.getElementById("saved-tab").style.display = tabName === "saved" ? "block" : "none";
+
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            if (tabName === "saved") updateSavedTab();
+        }
+
+        // =====================
+        // APPLICATION MODAL
+        // =====================
+        function openModal(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            document.getElementById("modalJobTitle").textContent = job.title + " at " + job.company;
+            document.getElementById("applicationForm").style.display = "block";
+            document.getElementById("successMsg").style.display = "none";
+
+            // Clear old values
+            document.getElementById("appName").value = "";
+            document.getElementById("appEmail").value = "";
+            document.getElementById("appPhone").value = "";
+            document.getElementById("appCover").value = "";
+
+            document.getElementById("modalOverlay").classList.add("show");
+        }
+
+        function closeModal() {
+            document.getElementById("modalOverlay").classList.remove("show");
+        }
+
+        // Close modal if user clicks outside
+        document.getElementById("modalOverlay").addEventListener("click", function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        function submitApplication() {
+            const name = document.getElementById("appName").value.trim();
+            const email = document.getElementById("appEmail").value.trim();
+
+            if (!name) {
+                alert("Please enter your name!");
+                return;
+            }
+            if (!email || !email.includes("@")) {
+                alert("Please enter a valid email address!");
+                return;
+            }
+
+            // Hide form, show success
+            document.getElementById("applicationForm").style.display = "none";
+            document.getElementById("successMsg").style.display = "block";
+        }
+
+        // =====================
+        // INITIAL LOAD
+        // =====================
+        renderJobs(jobs, "jobList");
+        document.getElementById("resultsInfo").textContent = `Showing all ${jobs.length} jobs`;
+    </script>
+
+</body>
+</html>
